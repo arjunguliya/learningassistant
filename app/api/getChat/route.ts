@@ -1,6 +1,6 @@
 import {
   TogetherAIStream,
-  TogetherAIStreamPayload,
+  type TogetherAIStreamPayload,
 } from "@/utils/TogetherAIStream";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
@@ -20,7 +20,7 @@ if (process.env.UPSTASH_REDIS_REST_URL) {
 }
 
 export async function POST(request: Request) {
-  let { messages } = await request.json();
+  const { messages } = await request.json();
 
   if (ratelimit) {
     const identifier = getIPAddress();
