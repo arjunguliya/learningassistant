@@ -51,7 +51,7 @@ export async function POST(request: Request) {
   }
 }
 
-export const runtime = "edge";
+//export const runtime = "edge";
 
 function getIPAddress() {
   const FALLBACK_IP_ADDRESS = "0.0.0.0";
