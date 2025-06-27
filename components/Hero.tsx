@@ -31,7 +31,7 @@ const Hero: FC<THeroProps> = ({
       <div className="mx-auto mt-10 flex max-w-3xl flex-col items-center justify-center sm:mt-36">
         <a
           className="mb-4 inline-flex h-7 shrink-0 items-center gap-[9px] rounded-[50px] border-[0.5px] border-solid border-[#E6E6E6] bg-[rgba(234,238,255,0.65)] bg-white px-5 py-4 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.25)]"
-          href="https://togetherai.link/"
+          href="https://www.scholarai.co/"
           target="_blank"
         >
           <Image
@@ -42,18 +42,18 @@ const Hero: FC<THeroProps> = ({
             height={20}
           />
           <span className="text-center text-sm font-medium italic">
-            Powered by <b>Llama 3.1</b> and <b>Together AI</b>
+            Powered by <b>Scholar AI</b>
           </span>
         </a>
         <h2 className="mt-2 bg-custom-gradient bg-clip-text text-center text-4xl font-medium tracking-tight text-gray-900 sm:text-6xl">
           Your Personal{" "}
           <span className="bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text font-bold text-transparent">
-            Tutor
+            AI Learning Assistant
           </span>
         </h2>
         <p className="mt-4 text-balance text-center text-sm sm:text-base">
           Enter a topic you want to learn about along with the education level
-          you want to be taught at and generate a personalized tutor tailored to
+          you want to be taught at and generate a personalized AI Assistant tailored to
           you!
         </p>
 
@@ -88,11 +88,12 @@ const Hero: FC<THeroProps> = ({
             </div>
           ))}
         </div>
+        {/*
         <p className="text-center text-sm font-light leading-[normal] text-[#1B1B16]">
           Fully open source!{" "}
           <span className="text-sm font-medium underline">
             <a
-              href="https://github.com/Nutlope/llamatutor"
+              href="https://github.com/arjunguliya/learningassistant"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -100,6 +101,7 @@ const Hero: FC<THeroProps> = ({
             </a>
           </span>
         </p>
+        */}
       </div>
       <div className="mx-auto max-w-7xl">
         <Image
