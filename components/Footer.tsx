@@ -14,7 +14,7 @@ const Footer = () => {
         />
       </a>
       <div className="flex items-center gap-3">
-        <Link href={"https://x.com/nutlope"} target="_blank">
+        <Link href={"https://x.com/arjunguliya"} target="_blank">
           <Image
             unoptimized
             src="/twitter.svg"
@@ -23,7 +23,7 @@ const Footer = () => {
             height={15}
           />
         </Link>
-        <Link href={"https://github.com/Nutlope/llamatutor"} target="_blank">
+        <Link href={"https://github.com/arjunguliya/learningassistant"} target="_blank">
           <Image
             unoptimized
             src={"/github.svg"}
