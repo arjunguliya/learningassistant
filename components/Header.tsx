@@ -22,7 +22,7 @@ const Header = async () => {
       <div className="flex items-center gap-4">
         {!(await isAuthenticated()) ? (
           <>
-            <LoginLink className="rounded-md [#5170ff] px-4 py-2 text-sm font-medium text-white hover:[#4c63d2]">
+            <LoginLink className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
               Sign in
             </LoginLink>
             <RegisterLink className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
