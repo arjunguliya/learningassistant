@@ -171,7 +171,7 @@ export default function HomeClient() {
         >
           <Image
             unoptimized
-            src="/togethercomputer.png"
+            src="/simple-logo.png"
             alt="hero"
             width={20}
             height={20}
