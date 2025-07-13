@@ -8,7 +8,7 @@ const Header = async () => {
 
   return (
     <div className="container flex h-[60px] shrink-0 items-center justify-between px-4 lg:h-[80px] lg:px-0">
-      <a href="/">
+      <a href="https://www.scholarai.co/">
         <Image
           unoptimized
           src="/new-logo.svg"
