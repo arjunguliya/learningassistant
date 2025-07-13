@@ -50,7 +50,7 @@ const InitialInputArea: FC<TInputAreaProps> = ({
           onChange={(e) => setPromptValue(e.target.value)}
           rows={1}
         />
-        <div className="relative flex items-center justify-center hover:bg-purple-50 transition-colors duration-200">
+        <div className="relative flex items-center justify-center hover:bg-[#dce2ff] transition-colors duration-200">
           <select
             id="grade"
             name="grade"
