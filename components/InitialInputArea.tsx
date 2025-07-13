@@ -39,7 +39,7 @@ const InitialInputArea: FC<TInputAreaProps> = ({
         handleInitialChat();
       }}
     >
-      <div className="flex w-full rounded-lg border-gray-400">
+      <div className="flex w-full rounded-lg border border-gray-400">
         <textarea
           placeholder="Teach me about..."
           className="block w-full resize-none rounded-l-lg border-r p-6 text-sm text-gray-900 placeholder:text-gray-400 sm:text-base"
