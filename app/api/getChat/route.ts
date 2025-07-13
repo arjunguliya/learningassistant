@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 
   try {
     const payload: TogetherAIStreamPayload = {
-      model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+      model: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
       messages,
       stream: true,
     };
