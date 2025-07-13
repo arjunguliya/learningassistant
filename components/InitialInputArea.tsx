@@ -42,7 +42,7 @@ const InitialInputArea: FC<TInputAreaProps> = ({
       <div className="flex w-full rounded-lg border border-gray-400">
         <textarea
           placeholder="Teach me about..."
-          className="block w-full resize-none rounded-l-lg border-r border-r-gray-400p-6 text-sm text-gray-900 placeholder:text-gray-400 sm:text-base"
+          className="block w-full resize-none rounded-l-lg border-r border-r-gray-400 p-6 text-sm text-gray-900 placeholder:text-gray-400 sm:text-base"
           disabled={disabled}
           value={promptValue}
           required
