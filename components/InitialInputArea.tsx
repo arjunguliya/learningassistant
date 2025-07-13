@@ -54,7 +54,7 @@ const InitialInputArea: FC<TInputAreaProps> = ({
           <select
             id="grade"
             name="grade"
-            className="appearance-none h-full rounded-md rounded-r-lg border-0 bg-transparent px-2 pr-8 text-sm center-justify font-medium text-gray-600 focus:ring-0 sm:text-base cursor-pointer"
+            className="appearance-none h-full rounded-md rounded-r-lg border-0 bg-transparent px-2 pr-8 text-sm font-medium text-gray-600 focus:ring-0 sm:text-base cursor-pointer"
             value={ageGroup}
             onChange={(e) => setAgeGroup(e.target.value)}
           >
