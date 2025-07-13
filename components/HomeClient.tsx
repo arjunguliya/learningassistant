@@ -22,7 +22,7 @@ export default function HomeClient() {
     [],
   );
   const [loading, setLoading] = useState(false);
-  const [ageGroup, setAgeGroup] = useState("Middle School");
+  const [ageGroup, setAgeGroup] = useState("High School");
 
   const handleInitialChat = async () => {
     setShowResult(true);
