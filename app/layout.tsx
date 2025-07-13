@@ -9,8 +9,8 @@ const montserrat = Montserrat({ subsets: ["latin"] });
 
 let title = "Scholar AI – Personal AI Learning Assistant";
 let description = "Learn faster with Scholar AI";
-let url = "https://ailearning.scholarai.co/";
-let ogimage = "https://ailearning.scholarai.co/og-image.png";
+let url = "https://learningassistant.scholarai.co/";
+let ogimage = "https://learningassistant.scholarai.co/og-image.png";
 let sitename = "scholarai.co";
 
 export const metadata: Metadata = {
@@ -45,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <head>
-        <PlausibleProvider domain="ailearning.scholarai.co" />
+        <PlausibleProvider domain="learningassistant.scholarai.co" />
       </head>
 
       <body
