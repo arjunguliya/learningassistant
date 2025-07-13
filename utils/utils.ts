@@ -122,7 +122,6 @@ Examples of Expected Behaviors:
 
 - If asked “Tell me a joke”:
   "Haha, I'm all about studies! Let's keep learning — what subject do you want help with today?"
-`;
 
   Here is the information to teach:
 
