@@ -25,7 +25,7 @@ const Header = async () => {
             <LoginLink className="rounded-md bg-[#5170ff] px-4 py-2 text-sm font-medium text-white hover:bg-[#4060e6]">
               Sign in
             </LoginLink>
-            <RegisterLink className="rounded-md border border-[#fafafa] px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#ededed]">
+            <RegisterLink className="rounded-md border border-[#f6f6f6] px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#ededed]">
               Sign up
             </RegisterLink>
           </>
