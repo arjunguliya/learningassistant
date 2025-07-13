@@ -34,9 +34,7 @@ const Hero: FC<THeroProps> = ({
           </span>
         </h2>
         <p className="mt-4 text-balance text-center text-sm sm:text-base">
-          Enter a topic you want to learn about along with the education level
-          you want to be taught at and generate a personalized AI Assistant tailored to
-          you!
+          Enter a topic you wish to learn, specify the desired education level you want to be taught at, and generate a     personalized AI Assistant tailored to your needs.
         </p>
 
         <div className="mt-4 w-full pb-6">
