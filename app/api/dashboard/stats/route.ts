@@ -1,43 +1,6 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextResponse } from "next/server";
-
-interface DayStats {
-  date: string;
-  questions: number;
-}
-
-// Mock data for demonstration - Replace with actual database queries
-const getMockDayStats = (userId: string): DayStats[] => {
-  const stats: DayStats[] = [];
-  const today = new Date();
-  
-  // Generate stats for the last 30 days
-  for (let i = 29; i >= 0; i--) {
-    const date = new Date(today);
-    date.setDate(date.getDate() - i);
-    
-    // Simulate some random question counts
-    const questions = Math.floor(Math.random() * 10) + (i < 7 ? 2 : 0); // More questions in recent days
-    
-    stats.push({
-      date: date.toISOString().split('T')[0], // YYYY-MM-DD format
-      questions,
-    });
-  }
-  
-  return stats;
-};
-
-const getTotalQuestions = (userId: string): number => {
-  // In a real app, this would be a database query
-  // return await db.conversations.aggregate({
-  //   where: { userId },
-  //   _sum: { questionCount: true }
-  // })._sum.questionCount || 0;
-  
-  // Mock total
-  return 47;
-};
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const { isAuthenticated, getUser } = getKindeServerSession();
@@ -46,16 +9,66 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const user = await getUser();
-  if (!user?.id) {
+  const kindeUser = await getUser();
+  if (!kindeUser?.id) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
   try {
-    // In a real app, these would be database queries
-    const dayStats = getMockDayStats(user.id);
-    const totalQuestions = getTotalQuestions(user.id);
-    
+    // Find or create user in our database
+    let user = await prisma.user.findUnique({
+      where: { kindeId: kindeUser.id }
+    });
+
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          kindeId: kindeUser.id,
+          email: kindeUser.email || "",
+          name: `${kindeUser.given_name || ""} ${kindeUser.family_name || ""}`.trim(),
+        }
+      });
+    }
+
+    // Get total questions count
+    const totalQuestionsResult = await prisma.conversation.aggregate({
+      where: { userId: user.id },
+      _sum: { questionCount: true }
+    });
+    const totalQuestions = totalQuestionsResult._sum.questionCount || 0;
+
+    // Get daily stats for the last 30 days
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const dailyStats = await prisma.dailyStat.findMany({
+      where: {
+        userId: user.id,
+        date: {
+          gte: thirtyDaysAgo
+        }
+      },
+      orderBy: { date: 'asc' }
+    });
+
+    // Fill in missing days with 0 questions
+    const dayStatsMap = new Map();
+    dailyStats.forEach(stat => {
+      dayStatsMap.set(stat.date.toISOString().split('T')[0], stat.questions);
+    });
+
+    const dayStats = [];
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
+      
+      dayStats.push({
+        date: dateStr,
+        questions: dayStatsMap.get(dateStr) || 0
+      });
+    }
+
     return NextResponse.json({
       dayStats,
       totalQuestions,
