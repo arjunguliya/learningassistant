@@ -1,100 +1,6 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextResponse } from "next/server";
-
-// In a real app, you'd use a database. For now, we'll use a simple file-based storage
-// You should replace this with your preferred database solution (PostgreSQL, MongoDB, etc.)
-
-interface ConversationLog {
-  id: string;
-  userId: string;
-  topic: string;
-  date: string;
-  questionCount: number;
-  messages: Array<{
-    role: string;
-    content: string;
-    timestamp: string;
-  }>;
-}
-
-// Mock data for demonstration - Replace with actual database queries
-const getMockConversations = (userId: string): ConversationLog[] => {
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const lastWeek = new Date(today);
-  lastWeek.setDate(lastWeek.getDate() - 7);
-
-  return [
-    {
-      id: "1",
-      userId,
-      topic: "Quantum Physics Basics",
-      date: today.toISOString(),
-      questionCount: 5,
-      messages: [
-        {
-          role: "user",
-          content: "What is quantum physics?",
-          timestamp: today.toISOString(),
-        },
-        {
-          role: "assistant",
-          content: "Quantum physics is the branch of physics that studies matter and energy at the smallest scales...",
-          timestamp: today.toISOString(),
-        },
-        {
-          role: "user",
-          content: "Can you explain wave-particle duality?",
-          timestamp: today.toISOString(),
-        },
-        {
-          role: "assistant",
-          content: "Wave-particle duality is one of the fundamental concepts in quantum mechanics...",
-          timestamp: today.toISOString(),
-        },
-      ],
-    },
-    {
-      id: "2",
-      userId,
-      topic: "Climate Change Science",
-      date: yesterday.toISOString(),
-      questionCount: 3,
-      messages: [
-        {
-          role: "user",
-          content: "What causes climate change?",
-          timestamp: yesterday.toISOString(),
-        },
-        {
-          role: "assistant",
-          content: "Climate change is primarily caused by increased greenhouse gas emissions...",
-          timestamp: yesterday.toISOString(),
-        },
-      ],
-    },
-    {
-      id: "3",
-      userId,
-      topic: "Financial Literacy",
-      date: lastWeek.toISOString(),
-      questionCount: 4,
-      messages: [
-        {
-          role: "user",
-          content: "How does compound interest work?",
-          timestamp: lastWeek.toISOString(),
-        },
-        {
-          role: "assistant",
-          content: "Compound interest is the interest calculated on the initial principal and accumulated interest...",
-          timestamp: lastWeek.toISOString(),
-        },
-      ],
-    },
-  ];
-};
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const { isAuthenticated, getUser } = getKindeServerSession();
@@ -103,21 +9,52 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const user = await getUser();
-  if (!user?.id) {
+  const kindeUser = await getUser();
+  if (!kindeUser?.id) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
   try {
-    // In a real app, fetch from your database
-    // const conversations = await db.conversations.findMany({
-    //   where: { userId: user.id },
-    //   orderBy: { date: 'desc' }
-    // });
+    // Find or create user in our database
+    let user = await prisma.user.findUnique({
+      where: { kindeId: kindeUser.id }
+    });
 
-    const conversations = getMockConversations(user.id);
-    
-    return NextResponse.json(conversations);
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          kindeId: kindeUser.id,
+          email: kindeUser.email || "",
+          name: `${kindeUser.given_name || ""} ${kindeUser.family_name || ""}`.trim(),
+        }
+      });
+    }
+
+    // Fetch conversations with messages
+    const conversations = await prisma.conversation.findMany({
+      where: { userId: user.id },
+      include: {
+        messages: {
+          orderBy: { timestamp: 'asc' }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    // Format the response
+    const formattedConversations = conversations.map(conv => ({
+      id: conv.id,
+      topic: conv.topic,
+      date: conv.createdAt.toISOString(),
+      questionCount: conv.questionCount,
+      messages: conv.messages.map(msg => ({
+        role: msg.role,
+        content: msg.content,
+        timestamp: msg.timestamp.toISOString()
+      }))
+    }));
+
+    return NextResponse.json(formattedConversations);
   } catch (error) {
     console.error("Error fetching conversations:", error);
     return NextResponse.json(
@@ -134,8 +71,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const user = await getUser();
-  if (!user?.id) {
+  const kindeUser = await getUser();
+  if (!kindeUser?.id) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
@@ -143,27 +80,77 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { topic, messages } = body;
 
-    // In a real app, save to your database
-    // const conversation = await db.conversations.create({
-    //   data: {
-    //     userId: user.id,
-    //     topic,
-    //     date: new Date().toISOString(),
-    //     questionCount: messages.filter(m => m.role === 'user').length,
-    //     messages
-    //   }
-    // });
+    // Find or create user
+    let user = await prisma.user.findUnique({
+      where: { kindeId: kindeUser.id }
+    });
 
-    const conversation = {
-      id: Date.now().toString(),
-      userId: user.id,
-      topic,
-      date: new Date().toISOString(),
-      questionCount: messages.filter((m: any) => m.role === 'user').length,
-      messages,
-    };
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          kindeId: kindeUser.id,
+          email: kindeUser.email || "",
+          name: `${kindeUser.given_name || ""} ${kindeUser.family_name || ""}`.trim(),
+        }
+      });
+    }
 
-    return NextResponse.json(conversation);
+    // Count user questions
+    const questionCount = messages.filter((m: any) => m.role === 'user').length;
+
+    // Create conversation with messages
+    const conversation = await prisma.conversation.create({
+      data: {
+        userId: user.id,
+        topic,
+        questionCount,
+        messages: {
+          create: messages.map((msg: any) => ({
+            role: msg.role,
+            content: msg.content,
+            timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date()
+          }))
+        }
+      },
+      include: {
+        messages: true
+      }
+    });
+
+    // Update daily stats
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    await prisma.dailyStat.upsert({
+      where: {
+        userId_date: {
+          userId: user.id,
+          date: today
+        }
+      },
+      update: {
+        questions: {
+          increment: questionCount
+        }
+      },
+      create: {
+        userId: user.id,
+        date: today,
+        questions: questionCount
+      }
+    });
+
+    return NextResponse.json({
+      id: conversation.id,
+      topic: conversation.topic,
+      date: conversation.createdAt.toISOString(),
+      questionCount: conversation.questionCount,
+      messages: conversation.messages.map(msg => ({
+        role: msg.role,
+        content: msg.content,
+        timestamp: msg.timestamp.toISOString()
+      }))
+    });
   } catch (error) {
     console.error("Error saving conversation:", error);
     return NextResponse.json(
