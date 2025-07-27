@@ -16,7 +16,7 @@ if (process.env.UPSTASH_REDIS_REST_URL) {
     // Allow 10 requests per day
     limiter: Ratelimit.fixedWindow(10, "1440 m"),
     analytics: true,
-    prefix: "llamatutor",
+    prefix: "learningassistant",
   });
 }
 
