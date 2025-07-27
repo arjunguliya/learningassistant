@@ -41,7 +41,7 @@ export async function GET() {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const dailyStats = await prisma.dailyStat.findMany({
+    const dailyStatsFromDB = await prisma.dailyStat.findMany({
       where: {
         userId: user.id,
         date: {
@@ -51,12 +51,14 @@ export async function GET() {
       orderBy: { date: 'asc' }
     });
 
-    // Fill in missing days with 0 questions
-    const dayStatsMap = new Map();
-    dailyStats.forEach(stat => {
-      dayStatsMap.set(stat.date.toISOString().split('T')[0], stat.questions);
+    // Create a map of existing stats
+    const statsMap = new Map();
+    dailyStatsFromDB.forEach(stat => {
+      const dateStr = stat.date.toISOString().split('T')[0];
+      statsMap.set(dateStr, stat.questions);
     });
 
+    // Generate array for last 30 days, filling missing days with 0
     const dayStats = [];
     for (let i = 29; i >= 0; i--) {
       const date = new Date();
@@ -65,7 +67,7 @@ export async function GET() {
       
       dayStats.push({
         date: dateStr,
-        questions: dayStatsMap.get(dateStr) || 0
+        questions: statsMap.get(dateStr) || 0  // Real data or 0, no fake data
       });
     }
 
