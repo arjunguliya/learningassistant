@@ -1,6 +1,7 @@
 import { LoginLink, RegisterLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import Image from "next/image";
+import Link from "next/link";
 
 const Header = async () => {
   const { isAuthenticated, getUser } = getKindeServerSession();
@@ -31,6 +32,13 @@ const Header = async () => {
           </>
         ) : (
           <div className="flex items-center gap-4">
+            <Link 
+              href="/dashboard"
+              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              Dashboard
+            </Link>
+            
             {user?.picture ? (
               <img 
                 className="h-8 w-8 rounded-full" 
